@@ -35,7 +35,7 @@
 		specseq$family_name="NoFamilyName"# add empty family name column
 	}
 	
-	specseq_final_name=paste(specseq$family_name, make.unique(specseq$scientific_name))# make sure to have individual names for each species/taxa entry
+	specseq_final_name=paste(gsub(" ", "_", specseq$family_name), make.unique(gsub(" ", "_", specseq$scientific_name)))# make sure to have individual names for each species/taxa entry; to avoid issues with multiple present space character in the columns those are replaces by lines
 
 
 
