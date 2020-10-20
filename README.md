@@ -21,5 +21,5 @@ Figure 1. Rarefaction is needed to bring original count data to a common ground 
 	1. filename contains first sampling method, and the minimum number that to which the data is resampled
 
 ## References
-Birks, H. J. B., & Line, J. M. (1992). The use of Rarefaction Analysis for Estimating Palynological Richness from Quaternary Pollen-Analytical Data. The Holocene, 2(1), 1–10. doi:10.1177/095968369200200101
+Birks, H. J. B., & Line, J. M. (1992). The use of Rarefaction Analysis for Estimating Palynological Richness from Quaternary Pollen-Analytical Data. The Holocene, 2(1), 1–10. https://doi:10.1177/095968369200200101
 Niemeyer, Bastian; Epp, Laura Saskia; Stoof-Leichsenring, Kathleen Rosmarie; Pestryakova, Ludmila A; Herzschuh, Ulrike (2016): DNA records from surface sediments of lacustrine lakes along a forest tundra - tundra transect at the Taymyr peninsula, northern Siberia. PANGAEA, https://doi.org/10.1594/PANGAEA.860628 - In supplement to: Niemeyer, Bastian; Epp, Laura Saskia; Stoof-Leichsenring, Kathleen Rosmarie; Pestryakova, Luidmila A; Herzschuh, Ulrike (2017): A comparison of sedimentary DNA and pollen from lake sediments in recording vegetation composition at the Siberian treeline. Molecular Ecology Resources, 17(6), e46-e62, https://doi.org/10.1111/1755-0998.12689
