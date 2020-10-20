@@ -1,7 +1,7 @@
 # R_Rarefaction 1.0
 R code for resampling and thus normalizing of count data to the minimum number of counts across a set of samples (e.g. sedaDNA sequence/pollen taxa counts per sample along a sediment core).
 
-![Barplot comparing original to resampled data](https://github.com/StefanKruse/R_Rarefaction/blob/master/output/resampled_speciesnumber_Sampleeffort1710_aggregated_comparisonplot.png)
+![Barplot comparing original to resampled data](https://github.com/StefanKruse/R_Rarefaction/blob/master/output/replace_resampled_speciesnumber_Sampleeffort1710_aggregated_comparisonplot.png)
 
 Figure 1. Rafefaction is needed to bring original count data to a common ground for downstream analyses. In the figure you see the uneven reduction of total number of species present in the samples when resampled to the minimum counts across all considered samples.
 
