@@ -42,6 +42,9 @@
 
 
 ### rarification
+# define method to use, either "replace" for simple resampling based on weights on the occurance of counts or "birksline" for the calculation of the expected number of pollen types following as stated in Birks, H. J. B., & Line, J. M. (1992). The use of Rarefaction Analysis for Estimating Palynological Richness from Quaternary Pollen-Analytical Data. The Holocene, 2(1), 1–10. doi:10.1177/095968369200200101
+samplingmethod="replace" 
+
 # resample loop for each sample/year present in the data table
 	(nsampleff=sort(apply(specseq[,c(colstart:colend)], 2, sum))[1])# determine min. read counts for rarefaction, here automatic procedure to find the minimum within the data set
 	resamplingnumber=100# set here the number of resamplings, standard==100
@@ -53,9 +56,15 @@
 	{
 	  print(yrcoli)
 	  
-	  allspec=specseq_final_name[which(specseq[,yrcoli]>0)]
-	  allspec_counts=specseq[which(specseq[,yrcoli]>0),yrcoli]
-	  
+		allspec=specseq_final_name[which(specseq[,yrcoli]>0)]
+		allspec_counts=specseq[which(specseq[,yrcoli]>0),yrcoli]
+		
+		if(samplingmethod=="birksline"){
+			allspecvector=NULL
+			for(ni in 1:length(allspec_counts))
+				allspecvector=c(allspecvector,rep(allspec[ni],allspec_counts[ni]))
+		}
+		
 	  if(length(allspec)>0)
 	  {
 		if(COLUMNNAMESAREYEARS)
@@ -72,7 +81,11 @@
 		  repeatsample=list()
 		  for(repi in 1:resamplingnumber)
 		  {
-			repeatsample[[repi]]=sample(allspec,nsampleeffi,replace=TRUE, prob=allspec_counts/sum(allspec_counts))# weighted resampling
+			if(samplingmethod=="replace"){
+				repeatsample[[repi]]=sample(allspec,nsampleeffi,replace=TRUE, prob=allspec_counts/sum(allspec_counts))# weighted resampling
+			}else if(samplingmethod=="birksline"){
+				repeatsample[[repi]]=sample(allspecvector,nsampleeffi,replace=FALSE)# Birks & Line without replacement
+			}	
 		  }
 		  sampleeffort[[which(nsampleff==nsampleeffi)]]=repeatsample
 		}
@@ -132,14 +145,14 @@
 		totspec$T=factor(totspec$T, levels=names(genrare))# ordered levels to contain original sorting of columns
 		totfam$T=factor(totfam$T, levels=names(genrare))# ordered levels to contain original sorting of columns
 	}
-	png(paste0("output/resampled_totalspecies_Sampleeffort",nsampleff,"_plot.png"), width=480,height=480)
+	png(paste0("output/",samplingmethod,"_resampled_totalspecies_Sampleeffort",nsampleff,"_plot.png"), width=480,height=480)
 	par(mar=c(8,4,3,1),las=2)
 	with(totspec,plot(Nspecies~T, main="number of species per sample"))
 	dev.off()
 
 	# save processed data
-	write.csv2(totspec, paste0("output/resampled_totalspecies_Sampleeffort",nsampleff,".csv"), row.names=FALSE)	
-	write.csv2(totfam, paste0("output/resampled_totalfamilies_Sampleeffort",nsampleff,".csv"), row.names=FALSE)	
+	write.csv2(totspec, paste0("output/",samplingmethod,"_resampled_totalspecies_Sampleeffort",nsampleff,".csv"), row.names=FALSE)	
+	write.csv2(totfam, paste0("output/",samplingmethod,"_resampled_totalfamilies_Sampleeffort",nsampleff,".csv"), row.names=FALSE)	
 	
 	
 
@@ -173,7 +186,7 @@
 
 	# calculate mean values for each species/taxa
 	speciesfamiliesdf_totfam=NULL
-	pdf(paste0("output/resampled_specieslevel_Sampleeffort",nsampleff,"_aggregated.pdf"))
+	pdf(paste0("output/",samplingmethod,"_resampled_specieslevel_Sampleeffort",nsampleff,"_aggregated.pdf"))
 	par(mar=c(8,4,3,1),las=2)
 	for(fami in names(totfam)[3:dim(totfam)[2]])
 	{
@@ -198,7 +211,7 @@
 	str(speciesfamiliesdf_totfam)
 	
 	# save processed data
-	write.csv2(speciesfamiliesdf_totfam, paste0("output/resampled_specieslevel_Sampleeffort",nsampleff,"_aggregated.csv"), row.names=FALSE)
+	write.csv2(speciesfamiliesdf_totfam, paste0("output/",samplingmethod,"_resampled_specieslevel_Sampleeffort",nsampleff,"_aggregated.csv"), row.names=FALSE)
 
 
 
@@ -226,7 +239,7 @@
 	ordidf=ordidf[rowsumsnotzero,colsumsnotzero]
 
 	# export data
-	write.csv2(t(ordidf), paste0("output/resampled_specieslevel_Sampleeffort",nsampleff,"_aggregated_pcainput.csv"))
+	write.csv2(t(ordidf), paste0("output/",samplingmethod,"_resampled_specieslevel_Sampleeffort",nsampleff,"_aggregated_pcainput.csv"))
 
 # comparison of original and resampled data set
 	# prepare the data
@@ -237,7 +250,7 @@
 	ordiorigdf=ordiorigdf[rowsumsnotzero,colsumsnotzero]
 
 	# species count (counts >= 1)
-	png(paste0("output/resampled_speciesnumber_Sampleeffort",nsampleff,"_aggregated_comparisonplot.png"), width=480,height=480)
+	png(paste0("output/",samplingmethod,"_resampled_speciesnumber_Sampleeffort",nsampleff,"_aggregated_comparisonplot.png"), width=480,height=480)
 		par(mar=c(8,4,3,1),las=2)
 		barplot(apply(ordiorigdf,2,function(x)length(which(x>=1))), col="tomato", border=FALSE)
 		barplot(apply(ordidf,2,function(x)length(which(x>=1))), add=TRUE, col="skyblue", border=FALSE)
@@ -248,7 +261,7 @@
 	pca_original=prcomp(sqrt(sqrt(t(ordiorigdf))))
 	pca_resampled=prcomp(sqrt(sqrt(t(ordidf))))
 	
-	png(paste0("output/resampled_specieslevel_Sampleeffort",nsampleff,"_aggregated_pca_comparisonplot.png"), width=960,height=480)
+	png(paste0("output/",samplingmethod,"_resampled_specieslevel_Sampleeffort",nsampleff,"_aggregated_pca_comparisonplot.png"), width=960,height=480)
 		par(mfrow=c(1,2))
 		biplot(pca_original, main="original data")
 		biplot(pca_resampled, main="rarefied data")
